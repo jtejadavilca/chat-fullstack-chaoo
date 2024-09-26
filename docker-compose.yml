@@ -1,0 +1,45 @@
+version: '3'
+services:
+
+  mongodb:
+    image: mongo:3.6
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
+    networks:
+      - mynetwork
+    restart: always
+  # db-inventory:
+  #   container_name: container-inventory
+  #   image: postgres:15.2
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: db-inventory
+  #     POSTGRES_USER: gabriel 
+  #     POSTGRES_PASSWORD: 3001
+  #   ports:
+  #     - 5431:5431
+  #   expose:
+  #     - 5431
+  #   command: -p 5431
+  # db-productos:
+  #   container_name: container-productos
+  #   image: postgres:15.2
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: db-productos
+  #     POSTGRES_USER: gabriel 
+  #     POSTGRES_PASSWORD: 3001 
+  #   ports:
+  #     - 5432:5432
+  #   expose:
+  #     - 5432
+  #   command: -p 5432
+
+
+# network
+networks:
+  mynetwork:
+    driver: bridge
