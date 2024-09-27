@@ -46,3 +46,19 @@ export const getProfile = async (token) => {
         console.error("Error getting profile", error);
     }
 };
+
+export const recoverPassword = async (email) => {
+    try {
+        const response = await fetch(`${baseUrl}/api/auth/recover-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error recovering password", error);
+    }
+};

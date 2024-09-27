@@ -38,7 +38,7 @@ export const AuthContextProvider = ({ children }) => {
             setRegisterInfo((prev) => ({ ...prev, ...info }));
             setRegisterError(null);
         },
-        [registerInfo, registerError]
+        [registerInfo]
     );
 
     const fnUpdateLoginInfo = useCallback(
@@ -46,7 +46,7 @@ export const AuthContextProvider = ({ children }) => {
             setLoginInfo((prev) => ({ ...prev, ...info }));
             setLoginError(null);
         },
-        [loginInfo, loginError]
+        [loginInfo]
     );
 
     const fnRegisterUser = useCallback(async () => {
@@ -54,15 +54,15 @@ export const AuthContextProvider = ({ children }) => {
         setRegisterError(null);
 
         const response = await registerUser(registerInfo);
+        setIsRegisterLoading(false);
 
         if (response.error) {
-            setRegisterError(response.message);
+            setRegisterError(response);
             return false;
         }
 
         setRegisterError(null);
         setUser(response.user);
-        setIsRegisterLoading(false);
         setRegisterInfo({
             name: "",
             email: "",
@@ -71,22 +71,22 @@ export const AuthContextProvider = ({ children }) => {
         });
         saveToken(response);
         return true;
-    }, [registerInfo, registerError]);
+    }, [registerInfo]);
 
     const fnLoginUser = useCallback(async () => {
         setIsLoginLoading(true);
         setLoginError(null);
 
         const response = await loginUser(loginInfo);
+        setIsLoginLoading(false);
 
         if (response.error) {
-            setLoginError(response.message);
+            setLoginError(response);
             return false;
         }
 
         setLoginError(null);
         setUser(response.user);
-        setIsLoginLoading(false);
         setLoginInfo({
             email: "",
             password: "",

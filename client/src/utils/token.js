@@ -4,14 +4,35 @@ export const saveToken = ({ token, user }) => {
 };
 
 export const getToken = () => {
-    return localStorage.getItem("token");
+    return getValidToken();
 };
 
 export const getUserToken = () => {
-    return localStorage.getItem("user");
+    if (getValidToken()) {
+        return localStorage.getItem("user");
+    }
+    return null;
 };
 
 export const removeToken = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
+};
+
+export const getValidToken = () => {
+    const token = localStorage.getItem("token");
+    let validToken = null;
+    try {
+        console.log("token obtained from localStorage:", token);
+        if (token !== null) {
+            const decodedToken = JSON.parse(atob(token.split(".")[1]));
+            validToken = decodedToken.exp * 1000 > Date.now() ? token : null;
+        }
+    } catch (error) {
+        console.error("Error validating token", error);
+    }
+    if (validToken === null) {
+        removeToken();
+    }
+
+    return validToken;
 };

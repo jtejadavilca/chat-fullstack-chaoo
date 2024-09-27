@@ -26,7 +26,7 @@ export const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         if (registerInfo.password !== registerInfo.confirmPassword) {
-            return setRegisterError("Passwords do not match!");
+            return setRegisterError({ message: "Passwords do not match" });
         }
 
         const respRegister = await fnRegisterUser();
@@ -80,10 +80,10 @@ export const Register = () => {
                         </Form.Group>
 
                         <Button variant="primary" type="submit" disabled={!enabledRegisterButton}>
-                            Register
+                            {isRegisterLoading ? "Creating user..." : "Register"}
                         </Button>
 
-                        {registerError && <Alert variant="danger">{registerError}</Alert>}
+                        {registerError && <Alert variant="danger">{registerError.message}</Alert>}
 
                         <span className="text-secondary">
                             Already have an account?{" "}

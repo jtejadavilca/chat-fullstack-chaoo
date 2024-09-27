@@ -62,14 +62,23 @@ export const Login = () => {
                             Login
                         </Button>
 
-                        {loginError && <Alert variant="danger">{loginError}</Alert>}
+                        {loginError && <Alert variant="danger">{loginError.message}</Alert>}
 
-                        <span className="text-secondary">
-                            Don't have an account?{" "}
-                            <Link to={"/register"} className="link-light text-decoration-none">
-                                Register
-                            </Link>
-                        </span>
+                        <Row>
+                            <Col className="d-flex justify-content-between">
+                                <span className="text-secondary">
+                                    Don't have an account?{" "}
+                                    <Link to={"/register"} className="link-light text-decoration-none">
+                                        Register
+                                    </Link>
+                                </span>
+                                <span className="text-secondary">
+                                    <Link to={"/recover-password"} className="link-light text-decoration-none">
+                                        Forgot your password?
+                                    </Link>
+                                </span>
+                            </Col>
+                        </Row>
                     </Stack>
                 </Col>
             </Row>

@@ -20,11 +20,14 @@ export const CustomNavbar = () => {
                         Chat App
                     </Link>
                 </h2>
-                {!!user && <span className="text-warning">Logged in as {user?.name}</span>}
+                {user && <span className="text-warning">Logged in as {user?.name}</span>}
                 <Nav className="mr-auto">
-                    {!!user && (
+                    {user && (
                         <Stack direction="horizontal" gap={3}>
-                            <Button className="link-light text-decoration-none" onClick={handleLogout}>
+                            <Button
+                                className="link-light text-decoration-none btn btn-secondary btn-link"
+                                onClick={handleLogout}
+                            >
                                 Logout
                             </Button>
                         </Stack>
