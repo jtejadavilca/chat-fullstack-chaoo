@@ -10,12 +10,6 @@ export const Login = () => {
     const { loginInfo, fnUpdateLoginInfo, setLoginInfo, loginError, setLoginError, isLoginLoading, fnLoginUser } =
         useContext(AuthContext);
 
-    useEffect(() => {
-        if (getToken()) {
-            navigate("/chat");
-        }
-    }, []);
-
     const [enabledLoginButton, setEnabledLoginButton] = useState(false);
 
     useEffect(() => {

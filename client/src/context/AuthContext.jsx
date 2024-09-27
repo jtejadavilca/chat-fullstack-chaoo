@@ -9,10 +9,7 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         const userFromLocalStorage = getUserToken();
-
-        if (userFromLocalStorage !== null) {
-            setUser(JSON.parse(userFromLocalStorage));
-        }
+        setUser(userFromLocalStorage !== null ? JSON.parse(userFromLocalStorage) : null);
     }, []);
 
     // Login

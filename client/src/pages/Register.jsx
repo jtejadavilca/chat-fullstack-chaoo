@@ -12,12 +12,6 @@ export const Register = () => {
     const [enabledRegisterButton, setEnabledRegisterButton] = useState(false);
 
     useEffect(() => {
-        if (getToken()) {
-            navigate("/chat");
-        }
-    }, []);
-
-    useEffect(() => {
         const { name, email, password, confirmPassword } = registerInfo;
         const enabled = name.length > 0 && email.length > 0 && password.length > 0 && confirmPassword.length > 0;
         setEnabledRegisterButton(enabled);
