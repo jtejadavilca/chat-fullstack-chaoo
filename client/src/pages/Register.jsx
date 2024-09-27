@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { getToken } from "../utils/token";
 export const Register = () => {
     const navigate = useNavigate();
 
@@ -9,6 +10,12 @@ export const Register = () => {
         useContext(AuthContext);
 
     const [enabledRegisterButton, setEnabledRegisterButton] = useState(false);
+
+    useEffect(() => {
+        if (getToken()) {
+            navigate("/chat");
+        }
+    }, []);
 
     useEffect(() => {
         const { name, email, password, confirmPassword } = registerInfo;

@@ -1,10 +1,20 @@
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { loginUser, registerUser } from "../utils/services";
+import { getUserToken, saveToken } from "../utils/token";
 
 export const AuthContext = createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const userFromLocalStorage = getUserToken();
+
+        if (userFromLocalStorage !== null) {
+            setUser(JSON.parse(userFromLocalStorage));
+        }
+    }, []);
+
     // Login
     const [loginError, setLoginError] = useState(null);
     const [isLoginLoading, setIsLoginLoading] = useState(false);
@@ -59,6 +69,7 @@ export const AuthContextProvider = ({ children }) => {
             password: "",
             confirmPassword: "",
         });
+        saveToken(response);
         return true;
     }, [registerInfo, registerError]);
 
@@ -80,8 +91,14 @@ export const AuthContextProvider = ({ children }) => {
             email: "",
             password: "",
         });
+        saveToken(response);
         return true;
     }, [loginInfo, loginError]);
+
+    const fnLogout = useCallback(() => {
+        setUser(null);
+        localStorage.clear();
+    }, []);
 
     return (
         <AuthContext.Provider
@@ -101,6 +118,8 @@ export const AuthContextProvider = ({ children }) => {
                 registerError,
                 setRegisterError,
                 isRegisterLoading,
+
+                fnLogout,
             }}
         >
             {children}

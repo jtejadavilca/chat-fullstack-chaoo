@@ -2,12 +2,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { getToken } from "../utils/token";
 
 export const Login = () => {
     const navigate = useNavigate();
 
     const { loginInfo, fnUpdateLoginInfo, setLoginInfo, loginError, setLoginError, isLoginLoading, fnLoginUser } =
         useContext(AuthContext);
+
+    useEffect(() => {
+        if (getToken()) {
+            navigate("/chat");
+        }
+    }, []);
 
     const [enabledLoginButton, setEnabledLoginButton] = useState(false);
 
