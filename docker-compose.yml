@@ -5,9 +5,9 @@ services:
     image: mongo:3.6
     container_name: mongodb
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
-      - ./data/db:/data/db
+      - mongodata:/data/db
     networks:
       - mynetwork
     restart: always
@@ -43,3 +43,7 @@ services:
 networks:
   mynetwork:
     driver: bridge
+
+volumes:
+  mongodata:
+    external: true
