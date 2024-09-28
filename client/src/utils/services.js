@@ -1,64 +1,56 @@
 export const baseUrl = "http://localhost:3000";
-export const registerUser = async (userInfo) => {
+
+export const postRequest = async (url, body, token) => {
     try {
-        const response = await fetch(`${baseUrl}/api/auth/register`, {
+        const headers = {
+            "Content-Type": "application/json",
+        };
+
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${baseUrl}${url}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userInfo),
+            headers,
+            body: JSON.stringify(body),
         });
-        const data = await response.json();
-        console.log("data:", data);
-        return data;
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            let message = responseData?.message ?? responseData;
+
+            return { error: true, message };
+        }
+
+        return responseData;
     } catch (error) {
-        console.error("Error registering user", error);
+        console.error("Error posting data", error);
     }
 };
 
-export const loginUser = async (userInfo) => {
+export const getRequest = async (url, token) => {
     try {
-        const response = await fetch(`${baseUrl}/api/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userInfo),
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error logging in user", error);
-    }
-};
+        const headers = {};
 
-export const getProfile = async (token) => {
-    try {
-        const response = await fetch(`${baseUrl}/api/auth/profile`, {
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${baseUrl}${url}`, {
             method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers,
         });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error getting profile", error);
-    }
-};
+        const responseData = await response.json();
 
-export const recoverPassword = async (email) => {
-    try {
-        const response = await fetch(`${baseUrl}/api/auth/recover-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
-        });
-        const data = await response.json();
-        return data;
+        if (!response.ok) {
+            let message = responseData?.message ?? responseData;
+
+            return { error: true, message };
+        }
+
+        return responseData;
     } catch (error) {
-        console.error("Error recovering password", error);
+        console.error("Error getting data", error);
     }
 };

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { recoverPassword } from "../utils/services";
+import { recoverPassword } from "../services/userService";
 import { Alert, Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
