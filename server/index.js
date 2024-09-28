@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+mongoose.set("debug", true);
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.get("/", (req, res) => {
     res.send("Hello World");
 });
 app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/chat", require("./routes/chatRoutes"));
+app.use("/api/users", require("./routes/chatRoutes"));
+app.use("/api/chats", require("./routes/messageRoutes"));
 
 mongoose.connect(config.connectionString).then(() => {
     console.log("Connected to MongoDB");

@@ -1,11 +1,13 @@
-const { createChat, findUserChats, findChat } = require("../controllers/chatController");
+const { createChat, findUserChats, findChat, getChats } = require("../controllers/chatController");
 
 const router = require("express").Router();
 
-router.post("/create", createChat);
+router.post("/:userId/chats", createChat);
 
-router.get("/user/:id", findUserChats);
+router.get("/:userId/chats", findUserChats);
 
-router.get("/:id", findChat);
+router.get("/:userId/chats/:secondId", findChat);
+
+router.get("/", getChats);
 
 module.exports = router;
