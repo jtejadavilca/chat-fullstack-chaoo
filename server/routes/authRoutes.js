@@ -1,72 +1,17 @@
-const bcrypt = require("bcrypt");
-const router = require("express").Router();
-const User = require("../models/userModel");
-const { generateToken } = require("../auth/jwt_util");
-const { validateRegisterFields } = require("../auth/validate_util");
+const { registerUser, login, getUser, getUsers, deleteUser } = require("../controllers/authController");
 
-const getUserResponse = (user) => {
-    return {
-        token: generateToken(user),
-        user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-        },
-    };
-};
+const router = require("express").Router();
 
 // Create account (register)
-router.post("/register", async (req, res) => {
-    const { name, email, password } = req.body;
-
-    const msgValidation = validateRegisterFields(name, email, password);
-    if (msgValidation) {
-        return res.status(400).json({ message: msgValidation, error: true });
-    }
-
-    const encryptedPassword = bcrypt.hashSync(password, 10);
-
-    const user = new User({ name, email, password: encryptedPassword });
-
-    try {
-        const newUser = await user.save();
-        res.status(201).json(getUserResponse(newUser));
-    } catch (error) {
-        res.status(400).json({ error: true, message: error.message });
-    }
-});
+router.post("/register", registerUser);
 
 // Login
-router.post("/login", async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    const wrongCredentials = { message: "Wrong credentials!", error: true };
-    if (user == null) {
-        return res.status(400).json(wrongCredentials);
-    }
+router.post("/login", login);
 
-    if (!bcrypt.compareSync(req.body.password, user.password)) {
-        return res.status(400).json(wrongCredentials);
-    }
+router.get("/users/:id", getUser);
 
-    res.json(getUserResponse(user));
-});
+router.get("/users", getUsers);
 
-router.get("/users/:id", async (req, res) => {
-    const user = await User.findById(req.params.id);
-    if (user == null) {
-        return res.status(404).json({ error: true, message: "User not found" });
-    }
-    res.json(user);
-});
-
-router.get("/users", async (req, res) => {
-    const users = await User.find();
-    res.json(users);
-});
-
-router.delete("/users", async (req, res) => {
-    const users = await User.deleteMany();
-    res.json(users);
-});
+router.delete("/users", deleteUser);
 
 module.exports = router;
