@@ -1,17 +1,42 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { LuSendHorizonal } from "react-icons/lu";
+import { Stack } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import { useFetchRecipientUser } from "../hooks/useFetchRecipients";
-import { Stack } from "react-bootstrap";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 
+/*const scrollDown = (element) => {
+    if (element) {
+        element.scrollTop = element.scrollHeight;
+    }
+};*/
+
 export const ChatBox = () => {
     const { user } = useContext(AuthContext);
-    const { currentChat, messages, isMessagesLoading } = useContext(ChatContext);
+    const { currentChat, messages, isMessagesLoading, onSaveMessage } = useContext(ChatContext);
     const [textMessage, setTextMessage] = useState("");
+    const chatBox = useRef(null);
 
     const { recipientUser, recipientUserError } = useFetchRecipientUser(currentChat, user);
+
+    const handleScroll = useCallback(
+        (element) => {
+            if (element) {
+                element.scrollTo({
+                    top: element.scrollHeight,
+                    left: 0,
+                    behavior: "smooth",
+                });
+            }
+        },
+        [chatBox, messages, currentChat]
+    );
+
+    useEffect(() => {
+        handleScroll(chatBox?.current);
+    }, [messages, currentChat, handleScroll]);
 
     if (!currentChat || !recipientUser) {
         return <p style={{ textAlign: "center", width: "100%" }}>No conversation selected yet</p>;
@@ -22,7 +47,11 @@ export const ChatBox = () => {
     }
 
     const onSendMessage = () => {
-        console.log("Sending message", textMessage);
+        if (textMessage.trim().length === 0) return;
+
+        onSaveMessage(textMessage);
+        setTextMessage("");
+        setTimeout(() => handleScroll(chatBox?.current), 100);
     };
 
     return (
@@ -31,7 +60,7 @@ export const ChatBox = () => {
                 <strong>{recipientUser?.name}</strong>
             </div>
 
-            <Stack gap={3} className="messages">
+            <Stack gap={3} className="messages" ref={chatBox}>
                 {messages.map((message) => (
                     <Stack
                         key={message._id}
@@ -42,21 +71,10 @@ export const ChatBox = () => {
                         }`}
                     >
                         <span>{message.text}</span>
-                        <span>{message.sender}</span>
-                        <span className="message-footer">{moment(message.createdAt).calendar()}</span>
+                        <span className="message-footer mt-3">{moment(message.createdAt).calendar()}</span>
                     </Stack>
                 ))}
                 {messages.length === 0 && <p>No messages yet</p>}
-                {/* 
-
-                <div className="message-input">
-                    <input type="text" placeholder="Type a message..." />
-                    <button>Send</button>
-                </div>
-
-                <div className="chat-footer">
-                    <span>Typing...</span>
-                </div> */}
             </Stack>
 
             <Stack direction="horizontal" className="chat-input flex-grow-0">
@@ -67,7 +85,9 @@ export const ChatBox = () => {
                     onEnter={() => onSendMessage()}
                     placeholder="Type a message..."
                 />
-                <button className="send-btn">Send</button>
+                <button className="send-btn" onClick={() => onSendMessage()}>
+                    <LuSendHorizonal />
+                </button>
             </Stack>
         </Stack>
     );

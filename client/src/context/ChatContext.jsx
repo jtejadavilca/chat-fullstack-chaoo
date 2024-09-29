@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import { createChat, getUserChats } from "../services/chatService";
+import { createChat, getUserChats, saveMessage } from "../services/chatService";
 import { useFetchPotentialChats } from "../hooks/useFetchPotentialChats";
 import { getChatMessages } from "../services/messagesService";
 
@@ -55,15 +55,18 @@ export const ChatContextProvider = ({ children, user }) => {
             }
 
             setMessages(response);
-            console.log("messages", messages);
         };
 
         fetchMessages();
     }, [currentChat]);
 
-    const onUpdateCurrentChat = (chat) => {
+    useEffect(() => {
+        if (user == null) setCurrentChat(null);
+    }, [user]);
+
+    const onUpdateCurrentChat = useCallback((chat) => {
         setCurrentChat(chat);
-    };
+    }, []);
 
     const onCreateChat = useCallback(
         async (recipientId) => {
@@ -78,6 +81,20 @@ export const ChatContextProvider = ({ children, user }) => {
             }
         },
         [user, userChats]
+    );
+
+    const onSaveMessage = useCallback(
+        async (message) => {
+            console.log("enviando message...:", message);
+            const response = await saveMessage(currentChat._id, user._id, message);
+            if (response.error) {
+                console.error("Error creating message", response);
+                return setMessagesError(response);
+            }
+
+            setMessages([...messages, response]);
+        },
+        [messages, user]
     );
 
     return (
@@ -98,6 +115,7 @@ export const ChatContextProvider = ({ children, user }) => {
                 messages,
                 isMessagesLoading,
                 messagesError,
+                onSaveMessage,
             }}
         >
             {children}

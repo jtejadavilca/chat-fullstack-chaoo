@@ -31,3 +31,14 @@ export const getUserPotenialChats = async (userId) => {
         return { error: true, message: errorMessage };
     }
 };
+
+export const saveMessage = async (chatId, senderId, message) => {
+    try {
+        const response = await postRequest(`/api/chats/${chatId}/messages`, { senderId, text: message });
+        return response;
+    } catch (error) {
+        const errorMessage = "Error saving message";
+        console.error(errorMessage, error);
+        return { error: true, message: errorMessage };
+    }
+};
