@@ -5,8 +5,8 @@ const { validateRegisterFields } = require("../auth/validate_util");
 
 const getUserResponse = (user) => {
     return {
-        token: generateToken(user),
         user: {
+            token: generateToken(user),
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -48,22 +48,4 @@ const login = async (req, res) => {
     res.json(getUserResponse(user));
 };
 
-const getUser = async (req, res) => {
-    const user = await User.findById(req.params.id);
-    if (user == null) {
-        return res.status(404).json({ error: true, message: "User not found" });
-    }
-    res.json(user);
-};
-
-const getUsers = async (req, res) => {
-    const users = await User.find();
-    res.json(users);
-};
-
-const deleteUser = async (req, res) => {
-    const users = await User.deleteMany();
-    res.json(users);
-};
-
-module.exports = { registerUser, login, getUser, getUsers, deleteUser };
+module.exports = { registerUser, login };

@@ -17,7 +17,7 @@ export const postRequest = async (url, body, token) => {
         });
         const responseData = await response.json();
 
-        if (!response.ok) {
+        if (response.error) {
             let message = responseData?.message ?? responseData;
 
             return { error: true, message };
@@ -43,7 +43,7 @@ export const getRequest = async (url, token) => {
         });
         const responseData = await response.json();
 
-        if (!response.ok) {
+        if (response.error) {
             let message = responseData?.message ?? responseData;
 
             return { error: true, message };

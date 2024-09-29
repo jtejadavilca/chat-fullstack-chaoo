@@ -13,7 +13,7 @@ function App() {
     return (
         <ChatContextProvider user={user}>
             <CustomNavbar />
-            <Container className="text-secondary">
+            <Container>
                 <Routes>
                     <Route path="/" element={user ? <Chat /> : <Login />} />
                     <Route path="*" element={<Navigate to="/" />} />

@@ -1,5 +1,5 @@
-export const saveToken = ({ token, user }) => {
-    localStorage.setItem("token", token);
+export const saveToken = ({ user }) => {
+    //localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
 };
 
@@ -19,11 +19,12 @@ export const removeToken = () => {
 };
 
 export const getValidToken = () => {
-    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
     let validToken = null;
+
     try {
-        console.log("token obtained from localStorage:", token);
-        if (token !== null) {
+        if (token) {
             const decodedToken = JSON.parse(atob(token.split(".")[1]));
             validToken = decodedToken.exp * 1000 > Date.now() ? token : null;
         }
