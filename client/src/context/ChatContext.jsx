@@ -2,6 +2,7 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import { createChat, getUserChats, saveMessage } from "../services/chatService";
 import { useFetchPotentialChats } from "../hooks/useFetchPotentialChats";
 import { getChatMessages } from "../services/messagesService";
+import io from "socket.io-client";
 
 export const ChatContext = createContext(null);
 
@@ -15,6 +16,45 @@ export const ChatContextProvider = ({ children, user }) => {
     const [messages, setMessages] = useState([]);
     const [isMessagesLoading, setIsMessagesLoading] = useState(false);
     const [messagesError, setMessagesError] = useState(null);
+    const [onlineUsers, setOnlineUsers] = useState([]);
+
+    /**
+     * Init socket connection
+     */
+    const [socket, setSocket] = useState(null);
+    useEffect(() => {
+        const newSocket = io("http://localhost:5000");
+        setSocket(newSocket);
+
+        return () => {
+            newSocket.close();
+        };
+    }, [user]);
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on("connect", () => {
+            console.log("connected to socket server");
+            socket.emit("addNewUser", user._id);
+        });
+
+        socket.on("disconnect", () => {
+            console.log("disconnected from socket server");
+            socket.emit("removeUser", user._id);
+        });
+
+        socket.on("onlineUsers", (users) => {
+            console.log("online users: ", users);
+            setOnlineUsers(users.map((u) => u.userId));
+        });
+
+        return () => {
+            socket.off("connect");
+            socket.off("disconnect");
+        };
+    }, [socket, user]);
+    //---------------------------------
 
     useEffect(() => {
         const fetchUserChats = async () => {
@@ -116,6 +156,8 @@ export const ChatContextProvider = ({ children, user }) => {
                 isMessagesLoading,
                 messagesError,
                 onSaveMessage,
+
+                onlineUsers,
             }}
         >
             {children}
