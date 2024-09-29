@@ -1,16 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Container, Stack } from "react-bootstrap";
 
-import { getToken } from "../utils/token";
-import { useNavigate } from "react-router-dom";
 import { ChatContext } from "../context/ChatContext";
 import { UserChat } from "../components/UserChat";
 import { AuthContext } from "../context/AuthContext";
 import { PotentialChats } from "../components/PotentialChats";
+import { ChatBox } from "../components/ChatBox";
 
 export const Chat = () => {
     const { user } = useContext(AuthContext);
-    const { userChats, isUserChatsLoading, userChatsError } = useContext(ChatContext);
+    const { userChats, isUserChatsLoading, userChatsError, onUpdateCurrentChat } = useContext(ChatContext);
 
     return (
         <Container>
@@ -21,13 +20,13 @@ export const Chat = () => {
                         {isUserChatsLoading && <p>Loading chats...</p>}
 
                         {userChats?.map((chat) => (
-                            <div key={chat._id} gap={3} className="chat-box">
+                            <div key={chat._id} gap={3} className="chat-box" onClick={() => onUpdateCurrentChat(chat)}>
                                 <UserChat chat={chat} user={user} />
                             </div>
                         ))}
                     </Stack>
 
-                    <p>Chatbox</p>
+                    <ChatBox />
                 </Stack>
             )}
         </Container>

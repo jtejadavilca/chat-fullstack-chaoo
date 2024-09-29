@@ -3,7 +3,7 @@ import { getRequest } from "../utils/services";
 
 export const useFetchRecipientUser = (chat, user) => {
     const [recipientUser, setRecipientUser] = useState(null);
-    const [error, setError] = useState(null);
+    const [recipientUserError, setRecipientUserError] = useState(null);
 
     const recipientId = chat?.members.find((u) => u !== user._id);
 
@@ -16,7 +16,7 @@ export const useFetchRecipientUser = (chat, user) => {
             const response = await getRequest(`/api/users/${recipientId}`, user.token);
 
             if (response.error) {
-                setError(response);
+                setRecipientUserError(response);
                 return;
             }
 
@@ -26,6 +26,5 @@ export const useFetchRecipientUser = (chat, user) => {
         fetchRecipient();
     }, [recipientId, user]);
 
-    return { recipientUser, error };
+    return { recipientUser, recipientUserError };
 };
-//TODO: Corregir, código generado por copilo.

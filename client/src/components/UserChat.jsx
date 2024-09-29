@@ -4,7 +4,7 @@ import { Stack } from "react-bootstrap";
 import avatar from "../../src/assets/profile.svg";
 
 export const UserChat = ({ chat, user }) => {
-    const { recipientUser, error } = useFetchRecipientUser(chat, user);
+    const { recipientUser, recipientUserError } = useFetchRecipientUser(chat, user);
 
     return (
         <Stack direction="horizontal" gap={3} className="user-card align-items-center p-2 justify-content-between">
