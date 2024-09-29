@@ -8,15 +8,18 @@ io.on("connection", (socket) => {
     console.log("a user connected with id: ", socket.id);
 
     socket.on("addNewUser", (userId) => {
-        const user = onlineUsers.find((user) => user.userId === userId);
-        if (user) {
-            user.socketIds.push(socket.id);
-            console.log("user already online: ", userId);
-            return;
-        } else {
-            console.log("new user added: ", userId);
-            onlineUsers.push({ userId, socketIds: [socket.id] });
+        if (userId) {
+            const user = onlineUsers.find((user) => user.userId === userId);
+            if (user) {
+                user.socketIds.push(socket.id);
+                console.log("user already online: ", userId);
+                return;
+            } else {
+                console.log("new user added: ", userId);
+                onlineUsers.push({ userId, socketIds: [socket.id] });
+            }
         }
+
         io.emit("onlineUsers", onlineUsers);
         console.log("online users: ", onlineUsers);
     });

@@ -36,12 +36,12 @@ export const ChatContextProvider = ({ children, user }) => {
 
         socket.on("connect", () => {
             console.log("connected to socket server");
-            socket.emit("addNewUser", user._id);
+            socket.emit("addNewUser", user?._id);
         });
 
         socket.on("disconnect", () => {
             console.log("disconnected from socket server");
-            socket.emit("removeUser", user._id);
+            //socket.emit("removeUser", user?._id);
         });
 
         socket.on("onlineUsers", (users) => {
