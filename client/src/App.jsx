@@ -5,11 +5,13 @@ import { Container } from "react-bootstrap";
 import { RecoverPassword } from "./pages/RecoverPassword";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+import { ChatContextProvider } from "./context/ChatContext";
 
 function App() {
     const { user } = useContext(AuthContext);
+
     return (
-        <>
+        <ChatContextProvider user={user}>
             <CustomNavbar />
             <Container className="text-secondary">
                 <Routes>
@@ -21,7 +23,7 @@ function App() {
                     <Route path="/recover-password" element={user ? <Navigate to="/" /> : <RecoverPassword />} />
                 </Routes>
             </Container>
-        </>
+        </ChatContextProvider>
     );
 }
 
