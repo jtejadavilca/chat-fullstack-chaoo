@@ -27,7 +27,10 @@ io.on("connection", (socket) => {
     socket.on("newMessage", (message) => {
         console.log("new message: ", message);
         const socketIds = onlineUsers.find((u) => u.userId === message.recipientId)?.socketIds || [];
-        socketIds.forEach((id) => {
+        const ownSocketIds = (onlineUsers.find((u) => u.userId === message.sender)?.socketIds || []).filter(
+            (id) => id !== socket.id
+        );
+        socketIds.concat(ownSocketIds).forEach((id) => {
             io.to(id).emit("receiveMessage", message);
         });
     });
