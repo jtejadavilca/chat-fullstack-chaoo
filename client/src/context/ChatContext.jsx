@@ -18,6 +18,8 @@ export const ChatContextProvider = ({ children, user }) => {
     const [messagesError, setMessagesError] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
 
+    const [newMessage, setNewMessage] = useState(null);
+
     /**
      * Init socket connection
      */
@@ -31,6 +33,7 @@ export const ChatContextProvider = ({ children, user }) => {
         };
     }, [user]);
 
+    // Add user to online users list
     useEffect(() => {
         if (!socket) return;
 
@@ -54,6 +57,19 @@ export const ChatContextProvider = ({ children, user }) => {
             socket.off("disconnect");
         };
     }, [socket, user]);
+
+    // Messaging functions
+    //TODO: Fix this, there is not "recipientId"
+    /*useEffect(() => {
+        if (!socket) return;
+
+        socket.emit('newMessage', {...newMessage, recipientId});
+
+        return () => {
+            socket.off("receiveMessage");
+        };
+    }, [newMessage]);*/
+
     //---------------------------------
 
     useEffect(() => {

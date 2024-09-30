@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useFetchRecipientUser } from "../hooks/_";
 import { Stack } from "react-bootstrap";
 import avatar from "../../src/assets/profile.svg";
+import { ChatContext } from "../context/ChatContext";
 
 export const UserChat = ({ chat, user }) => {
+    const { onlineUsers } = useContext(ChatContext);
     const { recipientUser, recipientUserError } = useFetchRecipientUser(chat, user);
 
     return (
@@ -20,7 +22,7 @@ export const UserChat = ({ chat, user }) => {
             <div className="d-flex flex-column align-items-end">
                 <div className="date">12/12/2022</div>
                 <div className="this-user-notifications">2</div>
-                <span className="user-online"></span>
+                <span className={onlineUsers.includes(recipientUser?._id) ? "user-online" : ""}></span>
             </div>
         </Stack>
     );
