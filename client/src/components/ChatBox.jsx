@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { LuSendHorizonal } from "react-icons/lu";
 import { Stack } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
@@ -7,36 +7,17 @@ import { useFetchRecipientUser } from "../hooks/_";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 
-/*const scrollDown = (element) => {
-    if (element) {
-        element.scrollTop = element.scrollHeight;
-    }
-};*/
-
 export const ChatBox = () => {
     const { user } = useContext(AuthContext);
     const { currentChat, messages, isMessagesLoading, onSaveMessage } = useContext(ChatContext);
     const [textMessage, setTextMessage] = useState("");
-    const chatBox = useRef(null);
+    const chatBox = useRef();
 
     const { recipientUser, recipientUserError } = useFetchRecipientUser(currentChat, user);
 
-    const handleScroll = useCallback(
-        (element) => {
-            if (element) {
-                element.scrollTo({
-                    top: element.scrollHeight,
-                    left: 0,
-                    behavior: "smooth",
-                });
-            }
-        },
-        [chatBox, messages, currentChat]
-    );
-
     useEffect(() => {
-        handleScroll(chatBox?.current);
-    }, [messages, currentChat, handleScroll]);
+        chatBox.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages, currentChat]);
 
     if (!currentChat || !recipientUser) {
         return <p style={{ textAlign: "center", width: "100%" }}>No conversation selected yet</p>;
@@ -51,7 +32,6 @@ export const ChatBox = () => {
 
         onSaveMessage(recipientUser._id, textMessage);
         setTextMessage("");
-        setTimeout(() => handleScroll(chatBox?.current), 100);
     };
 
     return (
@@ -60,9 +40,10 @@ export const ChatBox = () => {
                 <strong>{recipientUser?.name}</strong>
             </div>
 
-            <Stack gap={3} className="messages" ref={chatBox}>
+            <Stack gap={3} className="messages">
                 {messages.map((message) => (
                     <Stack
+                        ref={chatBox}
                         key={message._id}
                         className={`${
                             message.sender === user?._id
