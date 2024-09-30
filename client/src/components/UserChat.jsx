@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFetchRecipientUser } from "../hooks/_";
 import { Stack } from "react-bootstrap";
 import avatar from "../../src/assets/profile.svg";
@@ -6,6 +6,7 @@ import { ChatContext } from "../context/ChatContext";
 
 export const UserChat = ({ chat, user }) => {
     const { onlineUsers } = useContext(ChatContext);
+    const [contact, setContact] = useState(null);
     const { recipientUser, recipientUserError } = useFetchRecipientUser(chat, user);
 
     return (

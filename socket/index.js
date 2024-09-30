@@ -24,6 +24,14 @@ io.on("connection", (socket) => {
         console.log("online users: ", onlineUsers);
     });
 
+    socket.on("newMessage", (message) => {
+        console.log("new message: ", message);
+        const socketIds = onlineUsers.find((u) => u.userId === message.recipientId)?.socketIds || [];
+        socketIds.forEach((id) => {
+            io.to(id).emit("receiveMessage", message);
+        });
+    });
+
     socket.on("disconnect", () => {
         console.log(`user with ID ${socket.id} disconnected`);
         user = onlineUsers.find((u) => u.socketIds.includes(socket.id));

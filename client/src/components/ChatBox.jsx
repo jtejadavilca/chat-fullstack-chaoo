@@ -3,7 +3,7 @@ import { LuSendHorizonal } from "react-icons/lu";
 import { Stack } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
-import { useFetchRecipientUser } from "../hooks/useFetchRecipients";
+import { useFetchRecipientUser } from "../hooks/_";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 
@@ -49,7 +49,7 @@ export const ChatBox = () => {
     const onSendMessage = () => {
         if (textMessage.trim().length === 0) return;
 
-        onSaveMessage(textMessage);
+        onSaveMessage(recipientUser._id, textMessage);
         setTextMessage("");
         setTimeout(() => handleScroll(chatBox?.current), 100);
     };

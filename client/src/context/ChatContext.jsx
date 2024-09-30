@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import { createChat, getUserChats, saveMessage } from "../services/chatService";
-import { useFetchPotentialChats } from "../hooks/useFetchPotentialChats";
+import { useFetchPotentialChats } from "../hooks/_";
 import { getChatMessages } from "../services/messagesService";
 import io from "socket.io-client";
 
@@ -52,23 +52,31 @@ export const ChatContextProvider = ({ children, user }) => {
             setOnlineUsers(users.map((u) => u.userId));
         });
 
+        socket.on("receiveMessage", (message) => {
+            console.log("received message: ", message);
+            setMessages([...messages, message]);
+        });
+
         return () => {
             socket.off("connect");
             socket.off("disconnect");
+            socket.off("onlineUsers");
+            socket.off("receiveMessage");
         };
-    }, [socket, user]);
+    }, [socket, user, messages]);
 
     // Messaging functions
-    //TODO: Fix this, there is not "recipientId"
-    /*useEffect(() => {
+    useEffect(() => {
         if (!socket) return;
 
-        socket.emit('newMessage', {...newMessage, recipientId});
+        const recipientId = currentChat?.members.find((u) => u !== user._id);
+
+        socket.emit("newMessage", { ...newMessage, recipientId });
 
         return () => {
             socket.off("receiveMessage");
         };
-    }, [newMessage]);*/
+    }, [newMessage]);
 
     //---------------------------------
 
@@ -140,14 +148,14 @@ export const ChatContextProvider = ({ children, user }) => {
     );
 
     const onSaveMessage = useCallback(
-        async (message) => {
+        async (recipientId, message) => {
             console.log("enviando message...:", message);
             const response = await saveMessage(currentChat._id, user._id, message);
             if (response.error) {
                 console.error("Error creating message", response);
                 return setMessagesError(response);
             }
-
+            setNewMessage(response);
             setMessages([...messages, response]);
         },
         [messages, user]
